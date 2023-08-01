@@ -81,7 +81,7 @@ def new_chat():
         llm = ChatOpenAI(model_name=MODEL, openai_api_key=openai_api_key, temperature=0)
         if 'buffer_memory' not in st.session_state:
             st.session_state.buffer_memory = ConversationBufferWindowMemory(
-                k=20,
+                k=10,
                 return_messages=True
             )
 
