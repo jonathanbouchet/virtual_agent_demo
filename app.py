@@ -23,7 +23,7 @@ from gtts import gTTS, gTTSError
 logging.basicConfig(
     filename="app.log",
     format='%(asctime)s %(message)s',
-    filemode='w',)
+    filemode='w', )
 
 # Creating an object
 logger = logging.getLogger()
@@ -33,10 +33,8 @@ logger.setLevel(logging.INFO)
 
 # init
 if "password_correct" not in st.session_state:
-    print("here")
     st.session_state.password_correct = False
 if "password_correct_checked" not in st.session_state:
-    print("here")
     st.session_state.password_correct_checked = False
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -83,7 +81,7 @@ def new_chat():
         llm = ChatOpenAI(model_name=MODEL, openai_api_key=openai_api_key, temperature=0)
         if 'buffer_memory' not in st.session_state:
             st.session_state.buffer_memory = ConversationBufferWindowMemory(
-                k=10,
+                k=20,
                 return_messages=True
             )
 

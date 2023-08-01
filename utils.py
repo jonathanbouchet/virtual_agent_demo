@@ -36,8 +36,10 @@ def get_pdf(log_file) -> str:
     :return:
     """
     pdf = FPDF()
+    # pdf.set_doc_option('core_fonts_encoding', 'utf-8')
     pdf.add_page()
-    pdf.set_font("Arial", size=10)
+    pdf.add_font('Mono', '', 'FreeMono.ttf', uni=True)
+    pdf.set_font('Mono', '', 10)
     f = log_file
     for x in f.split("\n"):
         pdf.multi_cell(0, 5, x)
@@ -75,119 +77,6 @@ def download_transcript(last_message_ai: str) -> None:
             mime="application/octet-stream")
 
 
-def check_password():
-    """Returns `True` if the user had the correct password."""
-
-    def password_entered():
-        """Checks whether a password entered by the user is correct."""
-        if (
-                st.session_state["username"] in st.secrets["passwords"]
-                and st.session_state["password"]
-                == st.secrets["passwords"][st.session_state["username"]]
-        ):
-            st.session_state["password_correct"] = True
-            del st.session_state["password"]  # don't store username + password
-            del st.session_state["username"]
-        else:
-            st.session_state["password_correct"] = False
-
-    if "password_correct" not in st.session_state:
-        print("password_correct not in st.session_state")
-        # First run, show inputs for username + password.
-        st.sidebar.text_input("Username", on_change=password_entered, key="username", placeholder="user123")
-        st.sidebar.text_input(
-            "Password", type="password", on_change=password_entered, key="password"
-        )
-        return False
-    elif not st.session_state["password_correct"]:
-        print("Password not correct, show input + error.")
-        # Password not correct, show input + error.
-        st.sidebar.text_input("Username", on_change=password_entered, key="username", placeholder="user123")
-        st.sidebar.text_input(
-            "Password", type="password", on_change=password_entered, key="password"
-        )
-        st.error("User not known or password incorrect")
-        return False
-    else:
-        # Password correct.
-        return True
-
-
-def password_entered_v2():
-    """Checks whether a password entered by the user is correct."""
-    if (
-            st.session_state["username"] in st.secrets["passwords"]
-            and st.session_state["password"]
-            == st.secrets["passwords"][st.session_state["username"]]
-    ):
-        st.session_state["password_correct"] = True
-        del st.session_state["password"]  # don't store username + password
-        del st.session_state["username"]
-    else:
-        st.session_state["password_correct"] = False
-
-
-def check_password_v2():
-    """Returns `True` if the user had a correct password."""
-
-    password_entered_v2()
-
-    if "password_correct" not in st.session_state:
-        return False
-    elif not st.session_state["password_correct"]:
-        return False
-    else:
-        # Password correct.
-        return True
-
-
-def check_password_v3():
-    """Returns `True` if the user had a correct password."""
-    print("start check_password_v3")
-
-    # Create an empty container
-    placeholder = st.empty()
-
-    def password_entered_v3():
-        """Checks whether a password entered by the user is correct."""
-        if (
-                st.session_state["username"] in st.secrets["passwords"]
-                and st.session_state["password"]
-                == st.secrets["passwords"][st.session_state["username"]]
-        ):
-            st.session_state["password_correct"] = True
-            return True
-            del st.session_state["password"]  # don't store username + password
-            del st.session_state["username"]
-        else:
-            st.session_state["password_correct"] = False
-            return False
-
-    with placeholder.form("login"):
-        st.markdown("#### Enter your credentials")
-
-        username = st.text_input("username", key="username")
-        password = st.text_input("Password", type="password", key="password")
-        print(f"username{username}, password:{password}")
-        submit = st.form_submit_button("Login")
-        print(f"submit:{submit}")
-
-        if submit:
-
-            print("in submit")
-
-            if password_entered_v3():
-
-                if "password_correct" not in st.session_state:
-                    return False
-                elif not st.session_state["password_correct"]:
-                    st.error("User not known or password incorrect")
-                    return False
-                else:
-                    # Password correct.
-                    return True
-
-
 def template_insurance():
     """
     :return: prompt template
@@ -223,7 +112,10 @@ def template_insurance():
             ###
             The first question is "what is your name?"
             ###
-            After that, ask for my height in centimeters and weight in pounds then calculate my BMI.
+            After that, ask for my height in centimeters and weight in pounds
+            ###
+            Calculate my BMI.
+            Do not provide me the intermediate calculations, just give me the final result.
             If it is greater than 35, then ask for my average weight for the last 3 years. 
             if it is less than 35, move forward to the next question.
             ###
