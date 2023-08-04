@@ -2,6 +2,7 @@ import streamlit as st
 from datetime import datetime
 import tiktoken
 from fpdf import FPDF
+import re
 
 
 def get_time():
@@ -55,7 +56,8 @@ def download_transcript(last_message_ai: str) -> None:
     :return:
     """
     last_message_ai = last_message_ai.lower().strip()
-    if 'summary' in last_message_ai and 'download' in last_message_ai:
+    # if ('summarize' in last_message_ai or 'summary' in last_message_ai) and 'download' in last_message_ai:
+    if len(re.findall(r"summa[a-zA-Z]", last_message_ai, re.I)) > 0 and "download" in last_message_ai:
         now = datetime.now()
         print(f"last message was:{last_message_ai} @ {now}")
         # Print the output
